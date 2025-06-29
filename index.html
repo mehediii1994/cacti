@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CACTI Configuration in Ubuntu 20.04</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    pre {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Post Installation Task for Ubuntu Linux Server </h1>
+    <pre>
+
+Step-01:
+1st we have to enter in root user mode
+
+$sudo su			---- for ubuntu
+
+Step-02: 
+Check the OS details:
+#lsb_release -a
+
+Step-03: 
+Update the repo list:
+
+#cd  /etc/apt/
+#vi sources.list
+deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb http://archive.canonical.com/ubuntu focal partner
+deb-src http://archive.canonical.com/ubuntu focal partner
+
+
+
+Step-04: 
+Set the Resolver:
+#vim.tiny /etresolv.conf
+
+nameserver 8.8.8.8
+
+Step-05: 
+Update and Upgrade the Packages
+#apt update -y
+#apt upgrade -y
+
+Step-06: 
+Secure SSH server
+
+sudo apt update
+sudo apt install openssh-server
+
+#vi /etc/ssh/sshd_config
+
+To specify a specific port, username and root user disable for SSH, use following command
+
+Port 2023
+
+#systemctl restart sshd
+
+
+
+Step-07: 
+Access Secure by UFW:
+
+	1st install UFW in the server-
+
+#apt-get install ufw
+	To check UFW system status-
+
+	#systemctl status ufw
+
+	Allow connections to TCP port 22 on all IPv4 addresses:
+#ufw allow proto tcp to 0.0.0.0/0 port 22
+
+	To turn off IPv6:
+	#nano /etc/default/ufw
+
+      Change the line that says: IPV6=yes to IPV6=no 
+
+    #ufw reload
+    #ufw status
+
+	To allow permitted ports in UFW:
+#ufw allow 22
+      #ufw allow 22/tcp comment 'Allow SSH'
+#ufw allow 80
+ #ufw allow 443
+ #ufw allow 9000
+      #ufw allow ssh
+      #ufw allow 1000/tcp
+      #ufw allow 2000/udp
+      #ufw allow from 192.168.10.5/24 to any port 2233
+      #ufw allow from 203.0.113.0/24 proto tcp to any port 2266
+      #ufw allow proto tcp from any to any port 80,443
+ # ufw deny 5000
+
+To check UFW status
+#ufw status
+
+To enable or disable UFW
+#ufw enable/disable
+
+ After added any port or do any change in UFW, UFW has to be reloaded using the below command.
+#ufw reload
+
+	Delete ufw rules:
+     #ufw status numbered
+     #ufw delete 1
+     #ufw delete allow 80
+
+Step-08: 
+SNMP Configuration:
+To Install snmp service in server-
+#apt-get install snmpsnmpd
+      #systemctl statussnmpsnmpd
+      #systemctl enable snmp
+      #systemctl enable snmpd
+      #systemctl restart snmpsnmpd
+
+To Update SNMP Configuration:
+       #vi /etc/snmp.conf
+ 
+
+#vi /etc/snmp/snmpd.conf
+
+To change snmp Community-
+
+rocommunitysystem-server default
+
+To change snmp port-
+
+agentAddress udp:5678
+
+To apply the changes-
+#systemctl restart snmpd
+
+To check SNMP status-
+#systemctl status snmpd
+#snmpwalk -Os -c nmm -v 2c localhost
+#snmpwalk -Os -c public -v 2c 45.114.85.50
+#ufw allow from 45.114.85.50 to any port 161
+
+Step-09: 
+How to change Hostname:
+root@mail:/home/superadmin# hostname
+mail
+root@mail:/home/superadmin# hostnamectl set-hostname mail-monitor
+root@mail:/home/superadmin# hostname
+mail-monitor
+
+Step-10: 
+To enable Local Resolving:
+
+#vi /etc/hosts
+127.0.0.1 localhost
+192.168.123.3 sec-server.dditbd.com  sec-server
+#ping sec-server
+#ping sec-server.dditbd.com
+
+Step-11: 
+How to change Timezone:
+
+root@mail:/home/superadmin# timedatectl
+               Local time: Sun 2022-08-14 23:19:16 UTC
+           Universal time: Sun 2022-08-14 23:19:16 UTC
+                 RTC time: Sun 2022-08-14 23:19:16
+                Time zone: Etc/UTC (UTC, +0000)
+System clock synchronized: no
+              NTP service: active
+          RTC in local TZ: no
+root@mail:/home/superadmin# timedatectl set-timezone Asia/Dhaka
+root@mail:/home/superadmin# timedatectl
+               Local time: Mon 2022-08-15 05:19:57 +06
+           Universal time: Sun 2022-08-14 23:19:57 UTC
+                 RTC time: Sun 2022-08-14 23:19:57
+                Time zone: Asia/Dhaka (+06, +0600)
+System clock synchronized: no
+              NTP service: active
+          RTC in local TZ: no
+
+
+    </pre>
+    <h1>CACTI Configuration in Ubuntu 20.04</h1>
+    <pre>
+#apt update -y
+#apt upgrade -y
+#apt install apache2 -y
+#systemctl start apache2
+#systemctl enable apache2
+#apt install mariadb-server mariadb-client -y
+
+#vim.tiny /etc/mysql/mariadb.conf.d/50-server.cnf
+
+collation-server = utf8mb4_unicode_ci
+character-set-server=utf8mb4
+
+max_heap_table_size = 150M
+tmp_table_size = 150M
+innodb_buffer_pool_instances= 20
+join_buffer_size = 250M
+innodb_file_format = Barracuda
+innodb_large_prefix = 1
+innodb_buffer_pool_size = 2048M
+innodb_flush_log_at_timeout = 3
+innodb_read_io_threads = 32
+innodb_write_io_threads = 16
+innodb_io_capacity = 5000
+innodb_io_capacity_max = 10000
+innodb_doublewrite = OFF
+tmp_table_size=100M
+
+#systemctl restart mariadb
+#apt install libapache2-mod-php php-mysql php-xml php-gd php-snmp php-json php-intl php-mbstring php-ldap php-gmp -y
+
+#vim.tiny /etc/php/7.4/apache2/php.ini
+
+date.timezone = Asia/Dhaka
+memory_limit = 512M
+max_execution_time = 60
+
+#apt install rrdtool snmp snmpd snmp-mibs-downloader libsnmp-dev -y
+#mysql -u root -p
+mysql> select version();
++----------------------------------+
+| version()                        |
++----------------------------------+
+| 10.3.38-MariaDB-0ubuntu0.20.04.1 |
++----------------------------------+
+1 row in set (0.000 sec)
+
+mysql> CREATE DATABASE cacti;
+
+mysql> show databases;
++--------------------+
+| Database           |
+| cacti              |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> CREATE USER 'cacti'@'localhost' IDENTIFIED BY 'Sec@321#';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT ALL ON *.* TO 'cacti'@'localhost';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> select user from mysql.user;
++------------------+
+| user             |
++------------------+
+| cacti            |
+| debian-sys-maint |
+| mysql.infoschema |
+| mysql.session    |
+| mysql.sys        |
+| root             |
++------------------+
+6 rows in set (0.00 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> quit;
+Bye
+
+#cd /opt
+#wget https://www.cacti.net/downloads/cacti-latest.tar.gz --no-check-certificate
+or
+#wget https://files.cacti.net/cacti/linux/cacti-1.2.24.tar.gz
+#ls -la
+#tar xzf cacti-latest.tar.gz -C /var/www/html/
+#cd /var/www/html/
+#mv cacti-1.2.28 cacti
+# ls -la
+#chown -R www-data: /var/www/html/cacti/
+#ls -la
+#mysql -u root -p cacti < /var/www/html/cacti/cacti.sql
+#mysql -u root -p mysql < /usr/share/mysql/mysql_test_data_timezone.sql
+#mysql -u root -p
+>GRANT SELECT on mysql.time_zone_name to cacti@localhost;
+>FLUSH PRIVILEGES;
+>EXIT;
+
+#cd /var/www/html/cacti/include/
+#cp config.php.dist config.php
+#chown -R www-data: /var/www/html/cacti/
+#vim.tiny /var/www/html/cacti/include/config.php
+
+$database_type = ‘mysql’;
+$database_default = ‘cacti’;
+$database_hostname = ‘localhost’;
+$database_username = ‘cacti’;
+$database_password = ‘Sec@321#’;
+$database_port = ‘3306’;
+
+
+#vim.tiny /etc/apache2/sites-available/cacti.conf
+Alias /cacti    /var/www/html/cacti
+<Directory /var/www/html/cacti/>
+  <IfModule mod_authz_core.c>
+     Require all granted
+  </IfModule>
+</Directory>
+
+#systemctl restart apache2
+#systemctl enable apache2
+#php -v
+#vim.tiny /etc/php/7.4/cli/php.ini
+
+date.timezone = Asia/Dhaka
+
+# systemctl restart php*
+
+# vim.tiny /etc/cron.d/cacti
+
+*/5 * * * * www-data php /var/www/html/cacti/poller.php > /dev/null 2>&1
+
+
+Go to web Browser:
+==================
+
+http://x.x.x.x/cacti/
+
+
+Acme@321#
+    </pre>
+  </div>
+</body>
+</html>
