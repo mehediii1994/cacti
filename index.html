@@ -362,6 +362,155 @@ http://x.x.x.x/cacti/
 
 Acme@321#
     </pre>
+	<pre>
+01. Thold Plugin
+================
+
+Download thold plugin with wget command:
+========================================
+cd /var/www/html/cacti/plugins
+apt install git
+
+wget https://github.com/Cacti/plugin_thold/archive/v1.3.3.zip
+wget https://github.com/Cacti/plugin_thold/archive/refs/tags/v1.5.2.zip
+
+
+Unzip the file with unzip command:
+=================================
+apt install unzip
+
+unzip v1.5.2.zip
+
+mv plugin_thold-1.5.2 thold
+
+
+02. Add Monitor Plugin
+=======================
+
+
+#git clone https://github.com/Cacti/plugin_monitor.git
+
+#mv plugin_monitor monitor
+
+
+03. Add Mikrotik Plugi
+=======================
+
+
+#wget https://github.com/Cacti/plugin_mikrotik/archive/refs/tags/v2.2.zip
+#unzip v2.2.zip
+#mv plugin_mikrotik-2.2 mikrotik
+
+
+04. Add Weathermap
+===================
+
+#git clone https://github.com/thurban/plugin_weathermap.git
+
+#mv plugin_weathermap weathermap
+
+
+#chown -R www-data:www-data /var/www/html/cacti/plugins/weathermap/configs/
+
+
+chmod -R 755 /var/www/html/cacti/plugins/weathermap/configs/
+
+#systemctl restart apache2
+
+
+
+01. SNMP Enable in CISCO.txt
+============================
+
+Steps to enable SNMP in Cisco Switches and Routers:
+==================================================
+Login to the device using SSH / TELNET and go to enable mode.
+
+Go into the config mode.
+
+Router#configure terminal
+
+Enter configuration commands, one per line. End with CNTL/Z.
+
+Router(config)#
+
+Use the below command to configure read-only community string
+
+Router(config)#snmp-server community public RO
+
+(Where "public" is the read community string.)
+
+Use below command to configure the read-write community string
+
+Router(config)#snmp-server community private RW
+
+(Where "private" is the read-write community string)
+
+Exit the configuration mode
+
+Router(config)#exit
+
+Copy the running configuration into startup configuration using below command
+
+Router#write memory
+
+Building configuration... [OK]
+
+Router#
+
+
+02. SNMP Enable in Mikrotik
+===========================
+https://techexpert.tips/mikrotik/mikrotik-snmp-configuration/
+
+
+
+03. SNMP Enable in Juniper
+============================
+
+https://support.auvik.com/hc/en-us/articles/210571986-How-to-enable-SNMP-on-Juniper-SRX-firewalls
+
+
+
+#run sh configuration
+#set snmp community nmm authorization read-only
+#commit
+
+
+04. How to enable SNMP into Linux Machine
+=============================================
+
+#apt update -y
+#apt-get install snmp -y
+#vi /etc/snmp/snmp.conf
+
+mibs :                   .................>>>>>Add # before mibs
+
+
+#apt-get install snmpd -y
+#systemctl enable --now snmpd
+
+#vi /etc/snmp/snmpd.conf
+
+agentaddress  udp:127.0.0.1:161,udp:192.168.123.7:161
+
+rocommunity  public default 
+
+:x
+
+#service snmpd restart
+#service snmpd status
+
+
+#snmpwalk -Os -c public -v 2c localhost
+
+#snmpwalk -Os -c public -v 2c 45.114.85.50
+
+
+#ufw allow from 45.114.85.50 to any port 161
+
+
+</pre>
   </div>
 </body>
 </html>
