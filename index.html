@@ -33,6 +33,24 @@
       font-size: 14px;
       line-height: 1.6;
     }
+  <!DOCTYPE html>
+<html>
+<head>
+  <title>Colored Button</title>
+  <style>
+    .my-button {
+      background-color: #e63946; /* বাটনের ব্যাকগ্রাউন্ড রঙ */
+      color: white;             /* লেখার রঙ */
+      padding: 10px 20px;       /* ভেতরের স্পেস */
+      border: none;             /* বর্ডার মুছে ফেলা */
+      border-radius: 5px;       /* কোণা গোল করা */
+      cursor: pointer;          /* হ্যান্ড কার্সর দেখানো */
+      font-size: 16px;
+    }
+
+    .my-button:hover {
+      background-color: #d62828; /* হোভার করলে রঙ পরিবর্তন */
+    }
   </style>
 </head>
 <body>
@@ -511,7 +529,7 @@ rocommunity  public default
 
 
 </pre>
-<button onclick="window.open('https://photos.app.goo.gl/ndqWs9spgiovFZpg8', '_blank')">Visit Website</button>
+<button class="my-button" onclick="window.open('https://photos.app.goo.gl/ndqWs9spgiovFZpg8', '_blank')">Cacti Image</button>
   </div>
 </body>
 </html>
