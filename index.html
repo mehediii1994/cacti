@@ -334,11 +334,11 @@ $database_port = ‘3306’;
 
 #vim.tiny /etc/apache2/sites-available/cacti.conf
 Alias /cacti    /var/www/html/cacti
-<Directory /var/www/html/cacti/>
-  <IfModule mod_authz_core.c>
+&lt;<Directory /var/www/html/cacti/>&gt;
+  &lt;<IfModule mod_authz_core.c>&gt;
      Require all granted
-  </IfModule>
-</Directory>
+&lt;</IfModule>&gt;
+&lt;</Directory>&gt;
 
 #systemctl restart apache2
 #systemctl enable apache2
@@ -511,6 +511,7 @@ rocommunity  public default
 
 
 </pre>
+<img src="https://imgur.com/a/3JnGOdq" alt="Cacti Image">
   </div>
 </body>
 </html>
