@@ -530,6 +530,145 @@ rocommunity  public default
 
 </pre>
 <button class="my-button" onclick="window.open('https://photos.app.goo.gl/ndqWs9spgiovFZpg8', '_blank')">Cacti Image</button>
+<h1>SmokePing Configuration for Ubuntu 20.04</h1>
+<pre>
+  
+
+What is smokeping
+==================
+SmokePing consists of a daemon process which organizes the latency measurements and a CGI which presents the graphs.
+
+With SmokePing you can measure latency and packet loss in your network. SmokePing uses RRDtool to maintain a longterm datastore and to draw pretty graphs giving up to the minute information on the state of each network connection.
+
+
+Install smokeping Using apt:
+============================
+Update apt database with apt using the following command.
+
+#apt update
+
+After updating apt database, We can install smokeping using apt by running the following command:
+
+#apt -y install smokeping
+
+
+http://192.168.123.4/smokeping/smokeping.cgi
+
+
+Configuration:
+==============
+
+#vi /etc/smokeping/config.d/General
+
+*** General ***
+
+owner    = Deep Dive Institute of Technology
+contact  = systemadmin@dditbd.com
+mailhost = my.mail.host
+cgiurl   = http://some.url/smokeping.cgi
+syslogfacility = local0
+
+@include /etc/smokeping/config.d/pathnames
+
+
+
+#vi /etsmokeping/config.d/Targets
+
+*** Targets ***
+
+probe = FPing
+
+menu = Top
+title = Deep Dive Network Latency Grapher
+remark = Welcome to the Deep Dive.
+
++ Local
+
+menu = Local
+title = Local Network
+#parents = owner:/Test/James location:/
+
+++ CactiServer
+
+menu = CactiServer
+title = Cacti Server
+host = 192.168.123.6
+#alerts = someloss
+
++ DNS
+
+menu = DNS
+title = DNS Server
+
+++ GoogleDNSServer
+
+menu = Google DNS Server
+title = Google DNS Server
+host = 8.8.8.8
+
+++ CloudFlareDNSServer
+
+menu = CloudFlare DNS Server
+title = CloudFlare DNS Server
+host = 9.9.9.9
+
+++ IBMDNSServer
+
+menu = IBM DNS Server
+title = IBM DNS Server
+host = 1.1.1.1
+
+
++ Router
+
+menu = Router
+title = Core Router
+
+++ CoreRouter1
+menu = Core Router1
+title = Core Router1
+host = 192.168.123.5
+
+++ CoreRouter2
+menu = Core Router2
+title = Core Router2
+host = 192.168.123.6
+
+
+#systemctl restart smokeping
+#systemctl status smokeping
+
+http://192.168.123.3/smokeping/smokeping.cgi
+
+
+How To Uninstall smokeping:
+===========================
+How To Uninstall smokeping on Ubuntu 22.04
+-------------------------------------------
+To uninstall only the smokeping package we can use the following command:
+
+#apt-get remove smokeping
+
+Uninstall smokeping And Its Dependencies
+----------------------------------------
+To uninstall smokeping and its dependencies that are no longer needed by Ubuntu 21.04, we can use the command below:
+
+#apt-get -y autoremove smokeping
+
+Remove smokeping Configurations and Data
+-----------------------------------------
+To remove smokeping configuration and data from Ubuntu 21.04 we can use the following command:
+
+#apt-get -y purge smokeping
+
+Remove smokeping configuration, data, and all of its dependencies
+------------------------------------------------------------------
+We can use the following command to remove smokeping configurations, data and all of its dependencies, we can use the following command:
+
+#apt-get -y autoremove --purge smokeping
+
+
+</pre>
   </div>
 </body>
 </html>
