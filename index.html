@@ -669,6 +669,124 @@ We can use the following command to remove smokeping configurations, data and al
 
 
 </pre>
+  
+
+  <h1>Nagios Configuration into Ubuntu 20.04</h1>
+<pre>
+  
+  Step 1: Install Pre-requirements for Nagios
+=============================================
+1. First install the following LAMP stack components in your system, without MySQL RDBMS database component, by issuing the below command.
+
+# apt install apache2 libapache2-mod-php php -y
+
+2. Install the following system dependencies and utilities required to compile and install Nagios Core from sources
+
+# apt install wget unzip zip autoconf gcc libc6 make apache2-utils libgd-dev -y
+
+Step 2: Install Nagios 4 Core 
+=============================
+
+3. Create nagios system user and group and add nagios account to the Apache www-data user
+# useradd nagios
+# usermod -a -G nagios www-data
+
+4. Grab the latest version of Nagios Core stable source archive
+
+# wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.6.tar.gz
+
+5. Extract Nagios tarball and enter the extracted nagios directory.
+
+# tar xzf nagios-4.4.6.tar.gz 
+# cd nagios-4.4.6/
+# ls
+
+6. Now, start to compile Nagios from sources. Make sure you configure Nagios with Apache sites-enabled directory configuration.
+
+# ./configure --with-httpd-conf=/etc/apache2/sites-enabled
+
+7. Build Nagios files 
+
+# make all
+
+8. Install Nagios binary files, CGI scripts and HTML files 
+
+# make install
+
+9. Install Nagios daemon init and external command mode configuration files and make sure you enable nagios daemon system-wide.
+
+# make install-init
+# make install-commandmode
+# systemctl enable nagios.service
+
+10. Install some Nagios sample configuration files needed by Nagios to run properly.
+
+# make install-config
+
+11. Also, install Nagios configuration file for Apacahe web server, which can be fount in /etc/apacahe2/sites-enabled/ directory.
+
+# make install-webconf
+
+12. Create nagiosadmin account and a password for this account necessary by Apache server to log in to Nagios web panel.
+
+# htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+
+13. To allow Apache HTTP server to execute Nagios cgi scripts and to access Nagios admin panel via HTTP, first enable cgi module in Apache and then restart Apache service and start and enable Nagios daemon system-wide.
+
+# a2enmod cgi
+# systemctl restart apache2
+# systemctl start nagios
+#systemctl status nagios
+# 
+
+14. Finally, log in to Nagios Web Interface by pointing a browser to your server’s IP address or domain name at the following URL address via HTTP protocol. 
+
+Log in to Nagios with nagiosadmin user the password setup with htpasswd script.
+
+http://IP-Address/nagios
+
+OR
+http://DOMAIN/nagios
+
+15. To view your hosts status, navigate to Current Status -> Hosts menu where you will notice that some errors are displayed for localhost host, as illustrated in the below screenshot. The error appears because Nagios has no plugins installed to check hosts and services status.
+
+Step 3: Install Nagios Plugins
+==============================
+16. To compile and install Nagios Plugins from sources, at the first stage, install the following dependencies in your system.
+
+# apt install libmcrypt-dev make libssl-dev bc gawk dc build-essential snmp libnet-snmp-perl gettext libldap2-dev smbclient fping libmysqlclient-dev libdbi-dev 
+
+17. Next, visit Nagios Plugins repositories page and download the latest source code tarball.
+
+#cd ..
+# wget https://github.com/nagios-plugins/nagios-plugins/archive/release-2.3.3.tar.gz 
+
+18. Go ahead and extract the Nagios Plugins source code tarball and change path to the extracted nagios-plugins directory
+# tar xfz release-2.3.3.tar.gz 
+# cd nagios-plugins-release-2.3.3/
+
+19. Now, start to compile and install Nagios Plugins from sources.
+
+# ./tools/setup 
+# ./configure 
+# make
+# make install
+
+20. The compiled and installed Nagios plugins can be located in /usr/local/nagios/libexec/ directory. List this directory to view all available plugins in your system.
+
+# ls /usr/local/nagios/libexec/
+
+21. Finally, restart Nagios daemon in order to apply the installed plugins.
+
+# systemctl restart nagios.service
+
+
+
+
+
+
+
+</pre>
   </div>
 </body>
 </html>
